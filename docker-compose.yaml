@@ -20,6 +20,34 @@ services:
     volumes:
       - test-data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  # The `test-db-*` services create a mirror of your
+  # app with its own data
+  test-db:
+    profiles:
+      - db-test
+    image: mysql
+    container_name: test-db
+    command: ["--port=3307", "--mysqlx-port=33070"]
+    env_file: ./db/.env
+    environment:
+      MYSQL_DATABASE: test_db
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  test-db-app:
+    profiles:
+      - db-test
+    depends_on:
+      - test-db
+    image: node:18-alpine
+    container_name: test-db-app
+    working_dir: /src
+    volumes:
+      - ./app:/src
+    env_file: ./app/.env
+    environment:
+      DB_HOST: test-db
+      DB_PORT: 33070
+      DB_SCHEMA: test_db
 
 volumes:
   test-data:

@@ -6,7 +6,9 @@
   "scripts": {
     "test-db": "sudo docker start db-test || sudo docker run --network sql-unit-tester_default -e MYSQL_DATABASE=test_db --env-file=../db/.env --name db-test -v \"$(cd .. && pwd)\"/db/init.sql:/docker-entrypoint-initdb.d/init.sql mysql --port=3307 --mysqlx-port=33070",
     "get-ip": "sudo docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db-test",
-    "test": "sudo docker exec app sh -c 'DB_PORT=33070 DB_HOST=db-test node src/test.js'"
+    "test": "sudo docker exec app sh -c 'DB_PORT=33070 DB_HOST=db-test node src/test.js'",
+    "test-db-compose": "sudo docker-compose up --detach test-db",
+    "test-db-app-compose": "sudo docker-compose run test-db-app sh"
   },
   "dependencies": {
     "@mysql/xdevapi": "^8.0.31"
