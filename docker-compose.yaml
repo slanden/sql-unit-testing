@@ -1,7 +1,7 @@
 services:
   app:
     image: node:18-alpine
-    container_name: sql-unit
+    container_name: app
     init: true
     tty: true
     working_dir: /src

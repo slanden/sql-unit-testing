@@ -4,9 +4,14 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-db": "sudo docker start db-test || sudo docker run --network sql-unit-tester_default -e MYSQL_DATABASE=test_db --env-file=../db/.env --name db-test -v \"$(cd .. && pwd)\"/db/init.sql:/docker-entrypoint-initdb.d/init.sql mysql --port=3307 --mysqlx-port=33070",
+    "get-ip": "sudo docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db-test",
+    "test": "sudo docker exec app sh -c 'DB_PORT=33070 DB_HOST=db-test node src/test.js'"
   },
   "dependencies": {
     "@mysql/xdevapi": "^8.0.31"
+  },
+  "devDependencies": {
+    "baretest": "^2.0.0"
   }
 }
